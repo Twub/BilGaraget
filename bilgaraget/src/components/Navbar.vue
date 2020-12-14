@@ -23,7 +23,7 @@
           <a class="nav-link" href="/logout">Logga ut</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="#">Om oss</a>
+        <a class="nav-link" href="/about">Om oss</a>
       </li>
     </ul>
   </div>
