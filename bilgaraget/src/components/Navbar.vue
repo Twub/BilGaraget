@@ -11,12 +11,6 @@
         <a class="nav-link" href="#">Hem</a>
       </li>
       <li class="nav-item">
-          <a class="nav-link modal-trigger" href="/login">Logga in</a>
-      </li>
-      <li class="nav-item">
-          <a class="nav-link" href="/register">Registrera dig</a>
-      </li>
-      <li class="nav-item">
         <a class="nav-link" href="/myPage">Min sida</a>
       </li>
       <li class="nav-item">
@@ -26,27 +20,38 @@
         <a class="nav-link" href="/about">Om oss</a>
       </li>
     </ul>
+
+    
+    <div class="input">
+      <input type="email" class="input-field" id="email-input"  placeholder="Epost:">
+    </div>
+    <div class="input">
+      <input type="password" class="input-field" id="password-input" placeholder="Lösenord:">
+    </div>
+    <div class="input">
+      <button type="button" class="btn btn-primary">Logga in</button>
+    </div>
+    
+
   </div>
 
-  <div class="modal grey lighten-4" id="signin">
-      <Signin v-on:close="closeModal($event)" />
-    </div>
-
-    <div class="modal grey lighten-4" id="signup">
-      <Signup v-on:close="closeModal($event)" />
-    </div>
 </nav>
 </template>
 
 <script>
-import Signin from "@/components/user/Signin";
-import Signup from "@/components/user/Signup";
 
 export default{
     name: 'navbar',
-    components: {
-        Signin,
-        Signup
-    },
+    
 }
 </script>
+
+<style>
+.input-field{
+  color:white;
+}
+
+.input{
+  margin-left: 20px;
+}
+</style>
