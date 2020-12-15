@@ -1,6 +1,6 @@
 <template>
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-  <a class="navbar-brand" href="#">BilGaraget</a>
+  <a class="navbar-brand" href="#" @click="$router.push('/')">BilGaraget</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor02" aria-controls="navbarColor02" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -8,7 +8,7 @@
   <div class="collapse navbar-collapse" id="navbarColor02">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item active">
-        <a class="nav-link" href="#">Hem</a>
+        <a class="nav-link" @click="$router.push('/')">Hem</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="/myPage">Min sida</a>
@@ -17,19 +17,18 @@
           <a class="nav-link" href="/logout">Logga ut</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="/about">Om oss</a>
+        <a class="nav-link" @click="$router.push('/about')">Om oss</a>
       </li>
     </ul>
 
-    
     <div class="input">
-      <input type="email" class="input-field" id="email-input"  placeholder="Epost:">
+      <input type="email" class="input-field" id="email-input"  placeholder="Epost:" v-model="email" v-if="this.$store.getters.loggedInStatus == false">
     </div>
     <div class="input">
-      <input type="password" class="input-field" id="password-input" placeholder="Lösenord:">
+      <input type="password" class="input-field" id="password-input" placeholder="Lösenord:" v-model="password" v-if="this.$store.getters.loggedInStatus == false">
     </div>
     <div class="input">
-      <button type="button" class="btn btn-primary">Logga in</button>
+      <button type="button" class="btn btn-primary" v-on:click="login()" v-if="this.$store.getters.loggedInStatus == false">Logga in</button>
     </div>
     
 
@@ -42,7 +41,20 @@
 
 export default{
     name: 'navbar',
-    
+    data: function(){
+      return {
+        email: '',
+        password: '',
+      }
+    },
+    methods: {
+      async login() {
+        if (this.email.length <= 0 || this.password.length <= 0){
+          return
+        }
+        
+      }
+    }
 }
 </script>
 
