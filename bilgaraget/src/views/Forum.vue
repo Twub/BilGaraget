@@ -1,26 +1,27 @@
 <template>
   <div class="forum">
-    <h1>FORUM</h1>
-    <button @click="test">Click me!</button>
+    <ListThreads v-bind:category="this.category"></ListThreads>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
+import ListThreads from '@/components/ForumCategories/ListThreads'
 
 
 export default {
   name: 'Forum',
   props: ['categoryType'],
+  components: {
+      ListThreads,
+  },
   data: function(){
       return {
-        category: '',
+        category: this.categoryType,
       }
     },
     methods: {
-      test(){
-          console.log(this.categoryType)
-      }
+      
     },
 } 
 </script>
