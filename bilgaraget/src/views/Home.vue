@@ -6,16 +6,20 @@
       <hr class="my-4">
       <p>Detta forum är för allt som har med bilar att göra veteranbilar, ombyggda bilar, vanliga bilar etc.</p>
       <p class="lead">
-      <a class="btn btn-primary btn-lg" href="#" role="button">Learn more</a>
       </p>
     </div>
+    <ForumCategories></ForumCategories>
   </div>
 </template>
 
 <script>
 // @ is an alias to /src
+import ForumCategories from '@/components/ForumCategories'
 
 export default {
   name: 'Home',
+  components: {
+    ForumCategories,
+  }
 }
 </script>
