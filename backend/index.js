@@ -7,8 +7,22 @@ const app = express()
 app.use(cors())
 
 const RestApi = require('./RestApi')
+const ACL = require('./ACL')
+const ACLsettings = require('./ACLsettings')
 
 app.use(express.json())
+
+//PREVENTS CRASH FOR BAD FORMATTED JSON
+app.use((error, req, res, next) => {
+    console.log("ERROR: ", error)
+    if (error){
+        res-status(500)
+        res.json({
+            error: 'Something went wrong',
+            errorDetails: error
+        })
+    }
+})
 
 app.use(session({
     secret: require('./session-secret.json'),
