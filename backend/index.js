@@ -1,8 +1,11 @@
 const express = require('express')
 const session = require('express-session')
 const store = require('better-express-store')
+var cors = require('cors')
 
 const app = express()
+app.use(cors())
+
 const RestApi = require('./RestApi')
 
 app.use(express.json())
