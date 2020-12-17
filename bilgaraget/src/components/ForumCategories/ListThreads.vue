@@ -1,8 +1,9 @@
 <template>
     <div class="threads">
         <h1>{{ this.title }}</h1>
+        <ForumMenu v-bind:category="threadCategory"></ForumMenu>
         <ul class="list-group">
-            <li v-for="thread in threads" :key="thread.thread_title" class="list-group-item list-group-item-action">
+            <li v-for="thread in threads" :key="thread.thread_title" class="list-group-item list-group-item-action" @click="$router.push({name: 'thread', params: {thread: thread}})">
                 {{ thread.thread_title }}
             </li>
         </ul>
@@ -10,13 +11,19 @@
 </template>
 
 <script>
+import ForumMenu from './ForumMenu'
+
 export default{
     name: 'list-threads',
     props: ['category'],
+    components: {
+        ForumMenu,
+    },
     data: function(){
       return {
         threads: [],
-        title: ''
+        title: '',
+        threadCategory: this.category,
       }
     },
     methods: {
