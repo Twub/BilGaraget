@@ -2,6 +2,8 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Forum from '../views/Forum.vue'
+import Thread from '../views/Thread.vue'
+import CreateThread from '../views/CreateThread.vue'
 
 Vue.use(VueRouter)
 
@@ -23,6 +25,18 @@ const routes = [
     path: '/forum',
     name: 'forum',
     component: Forum,
+    props: true
+  },
+  {
+    path: '/forum/thread',
+    name: 'thread',
+    component: Thread,
+    props: true
+  },
+  {
+    path: '/forum/create-thread',
+    name: 'create-thread',
+    component: CreateThread,
     props: true
   }
 ]
