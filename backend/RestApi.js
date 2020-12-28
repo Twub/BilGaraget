@@ -39,8 +39,12 @@ module.exports = class RestApi {
       /*let result = statement.all();
       result.forEach(x => delete x.password)
       res.json(result);*/
-      res.json(statement.all().map(x => ({ ...x, password: undefined })));
-
+      try {
+        res.json(statement.all().map(x => ({ ...x, password: undefined })));
+      }
+      catch (e) {
+        res.json({error: e + ''})
+      }
     });
   }
 
@@ -50,7 +54,13 @@ module.exports = class RestApi {
       SELECT * FROM ${table}
       WHERE id = $id
     `);
-      let result = statement.get(req.params) || null;
+      let result;
+      try {
+        result = statement.get(req.params) || null;
+      }
+      catch (e) {
+        result = { error: e + '' };
+      }
       if (result) { delete result.password; }
       res.json(result);
     })
@@ -71,7 +81,12 @@ module.exports = class RestApi {
       VALUES (${Object.keys(b).map(x => '$' + x)})
     `);
       // Run the statement
-      res.json(statement.run(b));
+      try {
+        res.json(statement.run(b));
+      }
+      catch (e) {
+        res.json({error: e + ''})
+      }
     });
   }
 
@@ -93,16 +108,26 @@ module.exports = class RestApi {
       WHERE id = $id
     `);
       // Run the statement
-      res.json(statement.run(b));
+      try {
+        res.json(statement.run(b));
+      }
+      catch (e) {
+        res.json({error: e + ''})
+      }
     });
   }
 
   createDeleteRoute(table) {
     this.app.delete(this.prefix + table + '/:id', (req, res) => {
       let statement = this.db.prepare(`
-      DELETE FROM ${table} WHERE id = $id
-    `);
-      res.json(statement.run(req.params));
+        DELETE FROM ${table} WHERE id = $id
+      `); 
+      try {
+          res.json(statement.run(req.params));
+      }
+      catch (e) {
+        res.json({error: e + ''})
+      }
     });
   }
 

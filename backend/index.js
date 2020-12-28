@@ -2,6 +2,8 @@ const express = require('express')
 const session = require('express-session')
 const store = require('better-express-store')
 var cors = require('cors')
+const restRoutes = require('./routes/restRoutes')
+const authRoutes = require('./routes/authRoutes')
 
 const app = express()
 app.use(cors())
@@ -34,4 +36,7 @@ app.use(session({
 
 app.listen(3000, () => { console.log('Listening on port 3000') })
 
-new RestApi(app)
+app.use("/rest", restRoutes)
+app.use("/auth", authRoutes)
+
+//new RestApi(app)
