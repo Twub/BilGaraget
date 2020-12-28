@@ -9,7 +9,8 @@
                     <p class="post-info">Skapare: {{ this.thread.created_by }}</p>
                     <p class="post-info">Datum: {{ this.thread.created }}</p>
                 </div>
-                <button type="button" class="btn btn-primary" @click="answerPost" v-if="this.$store.getters.loggedInStatus == true">Svara:</button>
+                <button type="button" class="btn btn-primary" @click="answerPost" v-if="this.$store.getters.loggedInStatus == false">Svara:</button>
+                <AnswerPost></AnswerPost>
             </div>
         </div>
         <div class="thread-answers">
@@ -29,10 +30,14 @@
 </template>
 
 <script>
+import AnswerPost from './AnswerPost'
 
 export default{
     name: 'thread-posts',
     props: ['thread'],
+    components: {
+        AnswerPost,
+    },
     data: function(){
       return {
         posts: []

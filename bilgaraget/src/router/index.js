@@ -4,6 +4,7 @@ import Home from '../views/Home.vue'
 import Forum from '../views/Forum.vue'
 import Thread from '../views/Thread.vue'
 import CreateThread from '../views/CreateThread.vue'
+import CreateAccountView from '../views/CreateAccountView'
 
 Vue.use(VueRouter)
 
@@ -38,6 +39,12 @@ const routes = [
     name: 'create-thread',
     component: CreateThread,
     props: true
+  },
+  {
+    path: '/create-account',
+    name: 'create-account',
+    component: CreateAccountView,
+    props: false
   }
 ]
 
