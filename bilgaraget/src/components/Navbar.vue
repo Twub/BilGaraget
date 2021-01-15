@@ -11,13 +11,13 @@
         <a class="nav-link" @click="$router.push('/')">Hem</a>
       </li>
       <li class="nav-item active">
-        <a class="nav-link" @click="$router.push('/create-account')">Skapa konto</a>
+        <a class="nav-link" @click="$router.push('/create-account')" v-if="this.$store.getters.loggedInStatus == false">Skapa konto</a>
       </li>
       <li class="nav-item">
-        <a class="nav-link" href="/myPage" v-if="this.$store.getters.loggedInStatus == true">Min sida</a>
+        <a class="nav-link" @click="$router.push('/my-page')" v-if="this.$store.getters.loggedInStatus == true">Min sida</a>
       </li>
       <li class="nav-item">
-          <a class="nav-link" href="/logout" v-if="this.$store.getters.loggedInStatus == true">Logga ut</a>
+          <a class="nav-link" @click="logout()" v-if="this.$store.getters.loggedInStatus == true">Logga ut</a>
       </li>
       <li class="nav-item">
         <a class="nav-link" @click="$router.push('/about')">Om oss</a>
@@ -41,6 +41,7 @@
 </template>
 
 <script>
+import axios from 'axios';
 
 export default{
     name: 'navbar',
@@ -55,32 +56,35 @@ export default{
         if (this.email.length <= 0 || this.password.length <= 0){
           return
         }
-        const credentials = {email: this.email, password: this.password}
-        let res = await fetch("http://localhost:3000/auth/login", {
-        method: "POST",
+        let credentials = {email: this.email, password: this.password}
+        credentials = JSON.stringify(credentials)
+        axios.post("http://localhost:3000/auth/login", credentials, {
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(credentials),
       })
-        .then((response) => response.json())
-        .then((data) => console.log(data))
-        .catch((err) => console.error(err));
-        console.log(res)
-        console.log(this.fetchUser())
+        //console.log(res.data)
+        this.fetchUser()
       },
       async fetchUser(){
-        let res = await fetch("http://localhost:3000/auth/whoami");
-        console.log(res.json())
-        try {
-          if (res.ok) {
-            res = await res.json();
-          
-          } else {
-            console.log('error')
-          }
-        } catch {
-          console.log('catch error')
-        }
-    }
+        let res = axios.get("http://localhost:3000/auth/whoami", {
+          method: "GET",
+          mode: 'cors',
+          credentials: 'same-origin', // include, *same-origin, omit
+          headers: {
+            'Content-Type': 'application/json'
+            // 'Content-Type': 'application/x-www-form-urlencoded',
+          },
+          referrerPolicy: 'no-referrer',
+          //credentials: 'include'
+        });
+        res = (await res).data
+        this.$store.commit('setCurrentUser', res)
+        this.$store.commit('setIsLoggedIn', true)
+    },
+      async logout(){
+        await axios.get('http://localhost:3000/auth/logout')
+        this.$store.commit('setCurrentUser', null)
+        this.$store.commit('setIsLoggedIn', false)
+      }
       
     }
 }

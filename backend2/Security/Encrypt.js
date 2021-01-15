@@ -1,15 +1,14 @@
-const crypto = require('crypto');
+const crypto = require("crypto");
 //const { performance } = require('perf_hooks');
 
 module.exports = class Encrypt {
-
-  // Sha 256-encryption with 
+  // Sha 256-encryption with
   // the build in Node.js module crypto
   static encrypt(password) {
     return crypto
-      .createHmac('sha256', require('./salt.json'))
+      .createHmac("sha256", require("./salt.json"))
       .update(password)
-      .digest('hex');
+      .digest("hex");
   }
 
   // Multiencryption makes more cpu-expensive
@@ -22,8 +21,9 @@ module.exports = class Encrypt {
   // Obfuscation can always be reverse-enginereed
   // if someone has your source-code...
   static multiEncrypt(password, encryptTimes = 9999) {
-    while (encryptTimes--) { password = this.encrypt(password); }
+    while (encryptTimes--) {
+      password = this.encrypt(password);
+    }
     return password;
   }
-
-}
+};

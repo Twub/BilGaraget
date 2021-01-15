@@ -5,6 +5,7 @@ import Forum from '../views/Forum.vue'
 import Thread from '../views/Thread.vue'
 import CreateThread from '../views/CreateThread.vue'
 import CreateAccountView from '../views/CreateAccountView'
+import MyPageView from '../views/MyPageView'
 
 Vue.use(VueRouter)
 
@@ -44,6 +45,12 @@ const routes = [
     path: '/create-account',
     name: 'create-account',
     component: CreateAccountView,
+    props: false
+  },
+  {
+    path: '/my-page',
+    name: 'my-page',
+    component: MyPageView,
     props: false
   }
 ]

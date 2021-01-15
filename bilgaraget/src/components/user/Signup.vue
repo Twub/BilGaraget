@@ -4,16 +4,16 @@
     <hr/>
     <form @submit.prevent="signup">
       <div class="input-field">
-        <input type="text" id="text" v-model="name" />
-        <label for="email">Namn</label>
+        <input type="text" id="text" v-model="username" />
+        <label for="text">Användarnamn:</label>
       </div>
       <div class="input-field">
         <input type="email" id="email" v-model="email" />
-        <label for="email">E-post</label>
+        <label for="email">E-post:</label>
       </div>
       <div class="input-field">
         <input type="password" id="password" v-model="password" />
-        <label for="password">Lösenord</label>
+        <label for="password">Lösenord:</label>
       </div>
       <div v-if="alert !== ''">
         <h6>{{alert}}</h6>
@@ -24,11 +24,12 @@
 </template>
 
 <script>
+import axios from 'axios';
 export default {
   name: "register",
   data: function() {
     return {
-      name: "",
+      username: "",
       email: "",
       password: "",
       alert: "",
@@ -37,30 +38,17 @@ export default {
   },
   methods: {
     async signup() {
-      const newUser = {name: this.name, email: this.email, password: this.password}
-        let res = await fetch("http://localhost:3000/auth/register", {
+        let newUser = {
+          email: this.email,
+          username: this.username,
+          password: this.password,
+          roleId: 3    
+      };
+        await axios.post("http://localhost:3000/auth/register", JSON.stringify(newUser), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newUser),
       })
-        .then((response) => response.json())
-        .then((data) => console.log(data))
-        .catch((err) => console.error(err));
-        console.log(res)
     },
-    async fetchUser(){
-      let res = await fetch("/rest/auth/whoami");
-      try {
-      if (res.ok) {
-        res = await res.json();
-        
-      } else {
-        console.log('error')
-      }
-    } catch {
-      console.log('catch error')
-    }
-    }
   }
 };
 </script>

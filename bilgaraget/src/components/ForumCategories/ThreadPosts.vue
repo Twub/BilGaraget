@@ -2,35 +2,76 @@
     <div class="posts">
         <div class="thread-start-post">
             <div class="jumbotron start-post">
-                <h1 class="display-3">{{ this.thread.thread_title }}</h1>
+                <h1 class="display-3">{{ this.thread.title }}</h1>
                 <hr class="my-4">
-                <h4>{{ this.thread.thread_info }}</h4>
+                <h4>{{ this.thread.threadInfo }}</h4>
                 <div class="post-info-container">
-                    <p class="post-info">Skapare: {{ this.thread.created_by }}</p>
-                    <p class="post-info">Datum: {{ this.thread.created }}</p>
+                    <p class="post-info" v-if="this.$store.getters.loggedInStatus == true">Skapare: <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#user-modal" @click="getUser()"> {{ this.thread.creator }} </button></p>
+                    <br>
+                    <p class="post-info" v-if="this.$store.getters.loggedInStatus == false">Skapare: {{ this.thread.creator }}</p>
                 </div>
-                <button type="button" class="btn btn-primary" @click="answerPost" v-if="this.$store.getters.loggedInStatus == false">Svara:</button>
-                <AnswerPost></AnswerPost>
+                <AnswerPost v-if="this.$store.getters.loggedInStatus == true" v-bind:thread="thread"></AnswerPost>
+                <br>
+                
+                <button class="btn btn-primary" @click="lockThread()" v-if="this.thread.locked !== 1">Lås tråd</button>
             </div>
         </div>
         <div class="thread-answers">
             <ul>
             <li v-for="post in posts" :key="post.info" class="jumbotron">
-                <h1>{{ post.thread }}</h1>
+                <h4 v-if="post.warning === true" class="warning-message">{{ post.message }}</h4>
+                <h4 v-else>{{ post.message }}</h4>
                 <hr class="my-4">
-                <h4>{{ post.info }}</h4>
                 <div class="post-info-container">
-                    <p class="post-info">Skapare: {{ post.creator }}</p>
-                    <p class="post-info">Datum: {{ post.date }}</p>
+                    <p class="post-info">Skapare: {{ post.sender }}</p>
+                    <button class="btn btn-primary" @click="removeThread(post)">Ta bort inlägg</button>
                 </div>
             </li>
         </ul>
+        </div>
+
+        <!-- Modal -->
+        <div class="modal fade" id="user-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLabel">Användere: {{ this.user.username }}</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="form-group">
+                                <h2>Moderator för: </h2>
+                                <ul class="list-group">
+                                    <li v-for="moderatorOfThread in moderatorOfThreads" :key="moderatorOfThread.title" class="list-group-item list-group-item-action">
+                                        {{ moderatorOfThread.title }}
+                                    </li>
+                                </ul>
+                                <br>
+                                <h3>Inte moderator för:</h3>
+                                <br>
+                                <ul class="list-group">
+                                    <li v-for="notModeratorOfThread in notModeratorOfThreads" :key="notModeratorOfThread.title" class="list-group-item list-group-item-action" @click="changeModerator(notModeratorOfThread)">
+                                        {{ notModeratorOfThread.title }}
+                                    </li>
+                                </ul>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Stäng</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </template>
 
 <script>
 import AnswerPost from './AnswerPost'
+import axios from 'axios';
 
 export default{
     name: 'thread-posts',
@@ -40,35 +81,79 @@ export default{
     },
     data: function(){
       return {
-        posts: []
+        posts: [],
+        showRemoveModerator: false,
+        showAddModerator: false,
+        user: {
+            id: '',
+            email: '',
+            username: '',
+            roleid: ''
+        },
+        moderatorOfThreads: [],
+        notModeratorOfThreads: []
       }
     },
     methods: {
-        async getPostsFromDb(){
-            let postsFromDb = await fetch('http://localhost:3000/api/Posts/')
-            postsFromDb = await postsFromDb.json()
+        async getReplies(){
+            let result = await axios.get('http://localhost:3000/rest/replies/' + this.thread.id)
+            //result = await result.json()
             
-            for (var i = 0; i < postsFromDb.length; i++){
-                if (this.thread.id === postsFromDb[i].thread){
-                    this.posts.push(postsFromDb[i])
-                }
-            }
-            for (var j = 0; j < this.posts.length; j++){
-                let creator = await fetch('http://localhost:3000/api/users/' + this.posts[j].creator)
-                creator = await creator.json()
-
-                this.posts[j].creator = creator.name
-                this.posts[j].thread = this.thread.thread_title
-            }
-            //console.log(this.posts)
+            this.posts = result.data
         },
-        answerPost(){
-            alert('SVARA NU!!!')
+         async getUser(){
+            if (this.showRemoveModerator){
+                this.showRemoveModerator = false
+            }
+            let result = await axios.get('http://localhost:3000/rest/' + this.thread.creator)
+            this.user = result.data
+            console.log(result)
+            this.getModeratedThreads()
+            this.getAllThreads(result.data)
+        },
+        async changeUserRole(newRole){
+            console.log(newRole)
+
+        },
+        async getModeratedThreads(){
+            let result = await axios.get('http://localhost:3000/rest/moderator/' + this.user.id)
+            this.moderatorOfThreads = result.data
+        },
+        async getAllThreads(user){
+            let result = await axios.get('http://localhost:3000/rest/threads')
+            result = result.data
+            console.log(result)
+            if (user.username !== ''){
+                for (var i = 0; i < result.length; i++){
+                    if (this.user.username !== result.creator){
+                        this.notModeratorOfThreads.push(result[i])
+                    }
+                }
+            }else {
+                this.notModeratorOfThreads = result
+            }
+
+            console.log(this.notModeratorOfThreads)
+            
+            //this.notModeratorOfThreads = result
+        },
+        async changeModerator(thread){
+            await axios.get('http://localhost:3000/rest/addModerator/' + this.user.id + '/' + thread.id)
+        },
+        async removeUser(){
+            await axios.delete('http://localhost:3000/rest/deleteUser/' + this.user.id)
+        },
+        async lockThread(){
+            await axios.get('http://localhost:3000/rest/lockThread/' + this.thread.id)
+        },
+        async removeThread(reply){
+            await axios.get('http://localhost:3000/rest/deleteReply/' + reply.id)
         }
     },
     created(){
         //console.log(this.thread)
-        this.getPostsFromDb()
+        this.getReplies()
+       // this.getUser()
     }
 }
 </script>
@@ -85,6 +170,14 @@ export default{
 
 .jumbotron{
     border-style: solid;
+}
+
+.modal{
+    background-color: transparent;
+}
+
+.warning-message {
+    color: red;
 }
 
 </style>

@@ -1,14 +1,17 @@
 {
-  "name": "express-security",
+  "name": "backend",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "DB.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
   },
+  "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "accesscontrol": "^2.2.1",
     "better-express-store": "^1.0.4",
     "better-sqlite3": "^7.1.1",
     "cors": "^2.8.5",

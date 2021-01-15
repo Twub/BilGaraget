@@ -1,6 +1,11 @@
 <template>
     <div class="create-thread-form jumbotron">
         <h1>Skapa tråd:</h1>
+        <div class="form-group btn-group">
+            <button class="btn btn-primary create-form-btn" @click="setCategory('General')">Allmänt</button>
+            <button class="btn btn-primary create-form-btn" @click="setCategory('EngineTech')">Motorteknik</button>
+            <button class="btn btn-primary create-form-btn" @click="setCategory('CarSound')">Billjud</button>
+        </div>
         <div class="form-group">
             <h5>Title:</h5>
             <textarea class="form-control" id="title-input" rows="3" v-model="title"></textarea>
@@ -10,11 +15,13 @@
             <h5>Text:</h5>
             <textarea class="form-control" id="text-input" rows="3" v-model="text"></textarea>
         </div>
-        <button type="button" class="btn btn-primary btn-lg btn-block" @click="createThread">Skapa tråd</button>
+        <button type="button create-button" class="btn btn-primary btn-lg btn-block" @click="createThread">Skapa tråd</button>
     </div>
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
     name: 'create-thread-form',
     props: ['category'],
@@ -22,21 +29,26 @@ export default {
       return {
         title: '',
         text: '',
+        threadCategory: ''
       }
+    },
+    created(){
+        console.log(this.category)
     },
     methods: {
         createThread(){
-            console.log(this.category)
             if(this.title === '' || this.text === ''){
                 alert('Du måste skriva in en title och text')
                 return
             }
+            console.log(this.$store.getters.currentUser)
             let newThread = {
-                thread_info: this.text,
-                created: this.getCurrentDate(),
-                created_by: 1, //this.$store.getters.currentUser.id,
-                thread_title: this.title,
-                category: 1//this.getCategory()
+                title: this.title,
+                subjectId: this.threadCategory,
+                creator: this.$store.getters.currentUser.username,
+                locked: false,
+                moderators: null,
+                threadInfo: this.text
             }
             this.postToDb(newThread)
         },
@@ -49,26 +61,25 @@ export default {
             today = mm + '/' + dd + '/' + yyyy;
             return today
         },
-        getCategory(){
-            switch(this.category){
+        setCategory(cat){
+            switch(cat){
                 case 'General':
-                    return 1
+                    this.threadCategory = 'General'
+                    break
                 case 'EngineTech':
-                    return 2
+                    this.threadCategory = 'EngineTech'
+                    break
                 case 'CarSound':
-                    return 3
+                    this.threadCategory = 'CarSound'
+                    break
             }
         },
         async postToDb(thread){
-            let res = await fetch("http://localhost:3000/rest/threads/1", {
+            let formData = JSON.stringify(thread)
+            await axios.post("http://localhost:3000/rest/threads/1", formData, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(thread),
             })
-            .then((response) => response.json())
-            .then((data) => console.log(data))
-            .catch((err) => console.error(err));
-            console.log(res)
         }
     },
 }
@@ -92,8 +103,9 @@ export default {
     border: solid;
 }
 
-.jumbotron button{
+.create-button{
     margin-top: 40px;
 }
+
 
 </style>

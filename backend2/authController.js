@@ -1,30 +1,27 @@
 const sqlite3 = require("better-sqlite3");
-const db = sqlite3("../database.db");
-const Encrypt = require('../Encrypt')
+const db = sqlite3("../forum.db");
+const Encrypt = require('./Security/Encrypt')
 
 const register = async (req, res) =>{
-  console.log('In register');
   if(req.body.password){
     req.body.password = Encrypt.multiEncrypt(req.body.password)
   }
 let statement = db.prepare(/*sql*/`
-INSERT INTO users (email, name, password) values ($email, $name, $password)`)
+INSERT INTO users (email, username, password, roleId) values ($email, $username, $password, $roleId)`)
 res.json(statement.run(req.body))
 }
 
 const login = async (req, res) =>{
-  console.log('In login');
    if (req.body.password) {
         req.body.password = Encrypt.multiEncrypt(req.body.password);
       }
       let statement = db.prepare(/*sql*/`
-         SELECT * FROM users
-         WHERE email = $email AND password = $password
+         SELECT u.id, u.email, u.username, r.userRole FROM users as u, roles as r
+         WHERE u.email = $email AND u.password = $password AND r.id = u.roleId
       `);
-      let user = statement.get(req.body) || null;
+      let user = await statement.get(req.body) || null;
       if (user) {
         delete user.password;
-        // store the logged in user in a session
         req.session.user = user;
       }
       console.log(user);
