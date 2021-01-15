@@ -3,7 +3,6 @@ const router = express.Router();
 const restController = require('./restController');
 const authController = require("./authController");
 
-router.get('/subjects', restController.getCategories)
 router.get('/threads/:categoryId', restController.getThreadsByCategory)
 router.get('/replies/:threadId', restController.getReplies),
 router.post('/threads/:categoryId', restController.createThread)

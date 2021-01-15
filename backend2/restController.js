@@ -21,12 +21,6 @@ ac.grant('null').readAny('thread').readAny('user')
   .deleteAny("user")
   .deleteAny("thread");
 
-const getCategories = async (req, res) => {
-  let statement = db.prepare(/*sql*/ `
-   SELECT * FROM categories`);
-  res.json(statement.all());
-};
-
 const getThreadsByCategory = async (req, res) => {
   let statement = db.prepare(/*sql*/ `
    SELECT threads.* FROM threads, categories WHERE threads.cateogryId = $categoryId AND categories.id = $categoryId
@@ -165,7 +159,6 @@ const deleteReply = async (req, res) =>{
 
 
 module.exports = {
-  getCategories,
   getThreadsByCategory,
   getReplies,
   getUser,
