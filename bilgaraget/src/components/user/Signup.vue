@@ -44,7 +44,7 @@ export default {
           password: this.password,
           roleId: 3    
       };
-        await axios.post("http://localhost:3000/auth/register", JSON.stringify(newUser), {
+        await axios.post("http://localhost:3000/routes/register", JSON.stringify(newUser), {
         method: "POST",
         headers: { "Content-Type": "application/json" },
       })

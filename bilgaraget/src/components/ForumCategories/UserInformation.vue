@@ -22,7 +22,7 @@ export default{
             if (this.showRemoveModerator){
                 this.showRemoveModerator = false
             }
-            let result = await axios.get('http://localhost:3000/rest/' + this.user.username)
+            let result = await axios.get('http://localhost:3000/routes/' + this.user.username)
             this.user = result.data
         }
     },

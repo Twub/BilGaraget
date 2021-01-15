@@ -2,16 +2,16 @@ const sqlite3 = require("better-sqlite3");
 const db = sqlite3("../forum.db");
 const Encrypt = require('./Security/Encrypt')
 
-const register = async (req, res) =>{
+const signUp = async (req, res) =>{
   if(req.body.password){
     req.body.password = Encrypt.multiEncrypt(req.body.password)
   }
 let statement = db.prepare(/*sql*/`
-INSERT INTO users (email, username, password, roleId) values ($email, $username, $password, $roleId)`)
+INSERT INTO users (email, username, passwordd) values ($email, $username, $password)`)
 res.json(statement.run(req.body))
 }
 
-const login = async (req, res) =>{
+const signIn = async (req, res) =>{
    if (req.body.password) {
         req.body.password = Encrypt.multiEncrypt(req.body.password);
       }
@@ -19,17 +19,12 @@ const login = async (req, res) =>{
          SELECT u.id, u.email, u.username, r.userRole FROM users as u, roles as r
          WHERE u.email = $email AND u.password = $password AND r.id = u.roleId
       `);
-      let user = await statement.get(req.body) || null;
-      if (user) {
+      let userObj = await statement.get(req.body) || null;
+      if (userObj) {
         delete user.password;
         req.session.user = user;
       }
-      console.log(user);
-      res.json(user);
-}
-
-const whoami = async (req, res) =>{
-  res.json(req.session.user || null)
+      res.json(userObj);
 }
 
 const logout = async (req, res) =>{
@@ -37,9 +32,15 @@ const logout = async (req, res) =>{
   res.json({loggedOut: true})
 }
 
+const whoami = async (req, res) =>{
+  res.json(req.session.user || null)
+}
+
+
+
 module.exports = {
-  register, 
-login,
+  signUp, 
+  signIn,
 whoami, 
 logout
 };

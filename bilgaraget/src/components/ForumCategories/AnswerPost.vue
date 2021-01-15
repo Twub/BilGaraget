@@ -70,7 +70,7 @@ export default{
             return today
         },
         async postToDb(post){
-            await axios.post("http://localhost:3000/rest/replies/" + this.thread.id, JSON.stringify(post), {
+            await axios.post("http://localhost:3000/routes/replies/" + this.thread.id, JSON.stringify(post), {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
             })

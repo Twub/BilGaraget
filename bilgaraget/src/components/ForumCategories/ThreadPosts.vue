@@ -96,7 +96,7 @@ export default{
     },
     methods: {
         async getReplies(){
-            let result = await axios.get('http://localhost:3000/rest/replies/' + this.thread.id)
+            let result = await axios.get('http://localhost:3000/routes/replies/' + this.thread.id)
             //result = await result.json()
             
             this.posts = result.data
@@ -105,7 +105,7 @@ export default{
             if (this.showRemoveModerator){
                 this.showRemoveModerator = false
             }
-            let result = await axios.get('http://localhost:3000/rest/' + this.thread.creator)
+            let result = await axios.get('http://localhost:3000/routes/' + this.thread.creator)
             this.user = result.data
             console.log(result)
             this.getModeratedThreads()
@@ -116,11 +116,11 @@ export default{
 
         },
         async getModeratedThreads(){
-            let result = await axios.get('http://localhost:3000/rest/moderator/' + this.user.id)
+            let result = await axios.get('http://localhost:3000/routes/moderator/' + this.user.id)
             this.moderatorOfThreads = result.data
         },
         async getAllThreads(user){
-            let result = await axios.get('http://localhost:3000/rest/threads')
+            let result = await axios.get('http://localhost:3000/routes/threads')
             result = result.data
             console.log(result)
             if (user.username !== ''){
@@ -138,16 +138,16 @@ export default{
             //this.notModeratorOfThreads = result
         },
         async changeModerator(thread){
-            await axios.get('http://localhost:3000/rest/addModerator/' + this.user.id + '/' + thread.id)
+            await axios.get('http://localhost:3000/routes/addModerator/' + this.user.id + '/' + thread.id)
         },
         async removeUser(){
-            await axios.delete('http://localhost:3000/rest/deleteUser/' + this.user.id)
+            await axios.delete('http://localhost:3000/routes/deleteUser/' + this.user.id)
         },
         async lockThread(){
-            await axios.get('http://localhost:3000/rest/lockThread/' + this.thread.id)
+            await axios.get('http://localhost:3000/routes/lockThread/' + this.thread.id)
         },
         async removeThread(reply){
-            await axios.get('http://localhost:3000/rest/deleteReply/' + reply.id)
+            await axios.get('http://localhost:3000/routes/deleteReply/' + reply.id)
         }
     },
     created(){

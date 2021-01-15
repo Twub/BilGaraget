@@ -58,14 +58,14 @@ export default{
         }
         let credentials = {email: this.email, password: this.password}
         credentials = JSON.stringify(credentials)
-        axios.post("http://localhost:3000/auth/login", credentials, {
+        axios.post("http://localhost:3000/routes/login", credentials, {
         headers: { "Content-Type": "application/json" },
       })
         //console.log(res.data)
         this.fetchUser()
       },
       async fetchUser(){
-        let res = axios.get("http://localhost:3000/auth/whoami", {
+        let res = axios.get("http://localhost:3000/routes/whoami", {
           method: "GET",
           mode: 'cors',
           credentials: 'same-origin', // include, *same-origin, omit
