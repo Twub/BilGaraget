@@ -12,6 +12,7 @@
 
 <script>
 import ForumMenu from './ForumMenu'
+import axios from 'axios';
 
 export default{
     name: 'list-threads',
@@ -28,8 +29,8 @@ export default{
     },
     methods: {
       async getThreads(){
-          let result = await fetch('http://localhost:3000/routes/threads/' + this.getThreadId())
-          result = await result.json()
+          let result = await axios.get('/api/threads/' + this.getThreadId())
+          result = result.data
           for (var i = 0; i < result.length; i++){
               this.threads.push(result[i])
           }
