@@ -58,16 +58,16 @@ export default{
         }
         let credentials = {email: this.email, password: this.password}
         credentials = JSON.stringify(credentials)
-        axios.post("http://localhost:3000/routes/login", credentials, {
+        axios.post("/login", credentials, {
         headers: { "Content-Type": "application/json" },
       })
         //console.log(res.data)
         this.fetchUser()
       },
       async fetchUser(){
-        let res = axios.get("http://localhost:3000/routes/whoami", {
+        let res = axios.get("/whoami", {
           method: "GET",
-          mode: 'cors',
+          //mode: 'cors',
           credentials: 'same-origin', // include, *same-origin, omit
           headers: {
             'Content-Type': 'application/json'
@@ -81,7 +81,7 @@ export default{
         this.$store.commit('setIsLoggedIn', true)
     },
       async logout(){
-        await axios.get('http://localhost:3000/auth/logout')
+        await axios.get('/logout')
         this.$store.commit('setCurrentUser', null)
         this.$store.commit('setIsLoggedIn', false)
       }

@@ -22,7 +22,7 @@ app.use(cors())
 app.use(express.urlencoded({ extended: true }))
 
 const path = require('path')
-app.use(express.static(path.join(__dirname, '../bilgaraget/build')))
+app.use(express.static('dist'));
 
 app.use(session({
     secret: 'yesSecret1254654',

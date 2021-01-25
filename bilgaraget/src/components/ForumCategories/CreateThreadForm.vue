@@ -76,7 +76,7 @@ export default {
         },
         async postToDb(thread){
             let formData = JSON.stringify(thread)
-            await axios.post("http://localhost:3000/routes/threads/1", formData, {
+            await axios.post("/threads/1", formData, {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
             })

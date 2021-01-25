@@ -29,7 +29,7 @@ export default{
     },
     methods: {
       async getThreads(){
-          let result = await axios.get('/api/threads/' + this.getThreadId())
+          let result = await axios.get('/threads/' + this.getThreadId())
           result = result.data
           for (var i = 0; i < result.length; i++){
               this.threads.push(result[i])
