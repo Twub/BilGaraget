@@ -44,7 +44,7 @@ export default {
             console.log(this.$store.getters.currentUser)
             let newThread = {
                 title: this.title,
-                subjectId: this.threadCategory,
+                category: this.threadCategory,
                 creator: this.$store.getters.currentUser.username,
                 locked: false,
                 moderators: null,

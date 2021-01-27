@@ -4,6 +4,13 @@ import Vue from 'vue'
 import './plugins/bootstrap-vue'
 import App from './App.vue'
 import router from './router'
+
+import VueAnalytics from 'vue-analytics'
+Vue.use(VueAnalytics, {
+  id: 'UA-188220465-1',
+  router,
+})
+
 import store from './store'
 import 'materialize-css'
 import 'bootstrap'
